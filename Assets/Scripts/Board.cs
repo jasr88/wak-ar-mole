@@ -8,26 +8,40 @@ namespace WakARmole {
 		[SerializeField]
 		private Hole holePrefab;
 		[SerializeField]
-		[Range (3, 12)] private int holesCount = 6;
+		[Range (0, 10)] private float paddingX = 0;
+		[SerializeField]
+		[Range (0, 10)] private float paddingZ = 0;
 		[SerializeField]
 		private bool autoArrangeHoles = true;
-		[SerializeField]
-		private bool isHoleSquared = true;
 
 		private List<Hole> holes = new List<Hole> ();
 
 		// REMOVE THISSSS ONLY FOR TEST
-		private void Update() {
+		private void Start() {
 
 			Renderer boardMesh = boardGO.GetComponent<Renderer> ();
 
-			Debug.Log ("Board: " + boardMesh.bounds.size);
-			Debug.Log ("Hole: " + holePrefab.GetComponentInChildren<Renderer> ().bounds.size);
-
 			int xCount = Mathf.FloorToInt (boardMesh.bounds.size.x / holePrefab.GetComponentInChildren<Renderer> ().bounds.size.x);
-			int zCount = isHoleSquared ? xCount : Mathf.FloorToInt (boardMesh.bounds.size.z / holePrefab.GetComponentInChildren<Renderer> ().bounds.size.z);
+			int zCount = Mathf.FloorToInt (boardMesh.bounds.size.z / holePrefab.GetComponentInChildren<Renderer> ().bounds.size.z);
+			Debug.LogFormat ("boardMesh.bounds.size.x: {0}      holePrefab.GetComponentInChildren<Renderer> ().bounds.size.x: {1}", boardMesh.bounds.size.x, holePrefab.GetComponentInChildren<Renderer> ().bounds.size.x);
+			Debug.LogFormat ("boardMesh.bounds.size.z: {0}      holePrefab.GetComponentInChildren<Renderer> ().bounds.size.z: {1}", boardMesh.bounds.size.z, holePrefab.GetComponentInChildren<Renderer> ().bounds.size.z);
 
-			Debug.LogFormat ("Max number of holes x: {0}\nMax number of holes y: {1}", xCount, zCount);
+			float xOffset = boardMesh.bounds.size.x / (float)xCount + paddingX;
+			float yOffset = boardMesh.bounds.size.y;
+			float zOffset = boardMesh.bounds.size.z / (float)zCount + paddingZ;
+
+			float holeXSize = holePrefab.GetComponentInChildren<Renderer> ().bounds.size.x;
+			float holeZSize = holePrefab.GetComponentInChildren<Renderer> ().bounds.size.z;
+
+			for (int x = 0; x < xCount; x++) {
+				for (int z = 0; z < zCount; z++) {
+					//TODO: Change for a object Pooler
+					GameObject hole = Instantiate (holePrefab.gameObject);
+					hole.transform.localPosition = new Vector3 (((x - xCount / 2.0f) * (holeXSize+paddingX/2)) + (holeXSize / 2.0f), yOffset, ((z - zCount / 2.0f) * (holeZSize + paddingZ / 2)) + (holeZSize / 2.0f));
+					hole.transform.parent = boardGO.transform;
+					hole.name = "Hole (" + x + "," + z + ")";
+				}
+			}
 		}
 
 		public void PopulateBoard() {
@@ -45,24 +59,10 @@ namespace WakARmole {
 				return;
 			}
 
-#if UNITY_EDITOR
-			Debug.LogFormat (
-				"Board Configuration" +
-				"     Number of Holes: {0}\n" +
-				"     AutoArrangeHoles: {1}\n" +
-				"     IsHolesSquared: {2}\n" +
-				"     boardGO Name: {3}",
-				holesCount,
-				autoArrangeHoles,
-				isHoleSquared,
-				boardGO.name
-			);
-#endif
-
 			Mesh boardMesh = boardGO.GetComponent<Mesh> ();
 
 			int xCount = Mathf.FloorToInt (boardMesh.bounds.size.x / holePrefab.Size.x);
-			int yCount = isHoleSquared ? xCount : Mathf.FloorToInt (boardMesh.bounds.size.y / holePrefab.Size.y);
+			int yCount = Mathf.FloorToInt (boardMesh.bounds.size.y / holePrefab.Size.y);
 
 			for (int x = 0; x >= xCount; x++) {
 				for (int y = 0; y >= yCount; y++) {
