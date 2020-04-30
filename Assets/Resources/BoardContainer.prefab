@@ -44,11 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8f9f2304f166c74e9750924cacb28fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardGO: {fileID: 2002431256490966153}
   holePrefab: {fileID: 0}
-  holesCount: 12
-  autoArrangeHoles: 1
-  isHoleSquared: 1
+  paddingX: 0
+  paddingZ: 0
 --- !u!1 &2002431256490966153
 GameObject:
   m_ObjectHideFlags: 0
