@@ -1,80 +1,80 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace WakARmole {
+	[ExecuteInEditMode]
 	public class Board :MonoBehaviour {
-		[SerializeField]
 		private GameObject boardGO;
 		[SerializeField]
-		private Hole holePrefab;
+		private Hole holePrefab = null;
 		[SerializeField]
-		[Range (3, 12)] private int holesCount = 6;
+		[Range (-1, 1)] private float paddingX = 0;
 		[SerializeField]
-		private bool autoArrangeHoles = true;
-		[SerializeField]
-		private bool isHoleSquared = true;
+		[Range (-1, 1)] private float paddingZ = 0;
 
 		private List<Hole> holes = new List<Hole> ();
 
-		// REMOVE THISSSS ONLY FOR TEST
-		private void Update() {
-
-			Renderer boardMesh = boardGO.GetComponent<Renderer> ();
-
-			Debug.Log ("Board: " + boardMesh.bounds.size);
-			Debug.Log ("Hole: " + holePrefab.GetComponentInChildren<Renderer> ().bounds.size);
-
-			int xCount = Mathf.FloorToInt (boardMesh.bounds.size.x / holePrefab.GetComponentInChildren<Renderer> ().bounds.size.x);
-			int zCount = isHoleSquared ? xCount : Mathf.FloorToInt (boardMesh.bounds.size.z / holePrefab.GetComponentInChildren<Renderer> ().bounds.size.z);
-
-			Debug.LogFormat ("Max number of holes x: {0}\nMax number of holes y: {1}", xCount, zCount);
+		private void OnEnable() {
+			Debug.Log ("Enable Board");
+			SetBoardGo ();
 		}
 
-		public void PopulateBoard() {
-			if (boardGO == null) {
-#if UNITY_EDITOR
-				Debug.LogError ("You must to assign a GameObject to representante the virtual board for the game, please verify your Board prefab and assign a suitable 3D model for the boardGO property");
-#endif
-				return;
-			}
+		private void SetBoardGo() {
+			Debug.Log (transform.GetChild (0).gameObject.name);
+			boardGO = transform.GetChild (0).gameObject;
+		}
 
+		// This method is only for run on the custom editor
+		public bool IsHolePrefabEmpty() {
+			return holePrefab == null;
+		}
+
+		public void ResetBoard() {
+			while (boardGO.transform.childCount != 0) {
+				DestroyImmediate (boardGO.transform.GetChild (0).gameObject);
+			}
+		}
+		
+		public void GenerateBoard() {
 			if (holePrefab == null) {
-#if UNITY_EDITOR
-				Debug.LogError ("You must to assign a Hole Object to representante the virtual holes on the board, please verify your Board prefab and assign a suitable prefab for the holePrefab property");
-#endif
+				Debug.LogError ("You must to assign a Hole Prefab to representante the virtual holes on the board, please verify your Board prefab and assign a suitable prefab for the holePrefab property");
 				return;
 			}
-
-#if UNITY_EDITOR
-			Debug.LogFormat (
-				"Board Configuration" +
-				"     Number of Holes: {0}\n" +
-				"     AutoArrangeHoles: {1}\n" +
-				"     IsHolesSquared: {2}\n" +
-				"     boardGO Name: {3}",
-				holesCount,
-				autoArrangeHoles,
-				isHoleSquared,
-				boardGO.name
+		
+			ResetBoard ();
+	
+			Renderer boardMesh = boardGO.GetComponent<Renderer> ();
+			Vector2 holeSize = new Vector2 (
+				holePrefab.Size.x + paddingX,
+				holePrefab.Size.y + paddingZ
 			);
-#endif
 
-			Mesh boardMesh = boardGO.GetComponent<Mesh> ();
+			int xCount = Mathf.FloorToInt (boardMesh.bounds.size.x / holeSize.x);
+			int zCount = Mathf.FloorToInt (boardMesh.bounds.size.z / holeSize.y);
 
-			int xCount = Mathf.FloorToInt (boardMesh.bounds.size.x / holePrefab.Size.x);
-			int yCount = isHoleSquared ? xCount : Mathf.FloorToInt (boardMesh.bounds.size.y / holePrefab.Size.y);
+			float cellWidth = holeSize.x - paddingX / 2.0f;
+			float cellHeght = holeSize.y - paddingZ / 2.0f;
 
-			for (int x = 0; x >= xCount; x++) {
-				for (int y = 0; y >= yCount; y++) {
-					//TODO: Change for a object Pooler
-					GameObject hole = Instantiate (holePrefab.gameObject, boardGO.transform);
-					// TE QUEDASTE AQUIIIIIIIIIIII
-					hole.transform.SetPositionAndRotation (holePrefab.Size * 0.5f + new Vector3 (x, y, 0), Quaternion.identity);
+			float xOffset = holeSize.x / 2.0f;
+			float yOffset = boardMesh.bounds.size.y + 0.01f;
+			float zOffset = holeSize.y / 2.0f;
+
+			for (int z = 0; z < zCount; z++) {
+				for (int x = 0; x < xCount; x++) {
+					GameObject hole = PrefabUtility.InstantiatePrefab (holePrefab.gameObject) as GameObject;
+					hole.transform.localPosition = new Vector3 (((x - xCount / 2.0f) * cellWidth) + xOffset, yOffset, ((z - zCount / 2.0f) * cellHeght) + zOffset);
+					hole.transform.parent = boardGO.transform;
+					hole.name = "Hole (" + x + "," + z + ")";
 				}
 			}
-
 		}
 
+		public static void CreateBoardInstance() {
+			GameObject board =Instantiate(Resources.Load ("BoardContainer",typeof(GameObject)), Vector3.zero,Quaternion.identity) as GameObject;
+			board.name = "Board Template";
+			board.GetComponent<Board> ().SetBoardGo ();
+		} 
 
 	}
 }
