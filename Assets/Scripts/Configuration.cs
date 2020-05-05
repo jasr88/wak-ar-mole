@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace WakARmole {
+namespace WhackARmole {
 	public class Configuration :MonoBehaviour {
 		[Header ("Time Configurations")]
 		[Tooltip ("Initial countdown duration in seconds (Default Value: 3s)")]

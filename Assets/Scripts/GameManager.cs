@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace WakARmole {
+namespace WhackARmole {
 
 	public class GameManager :Singleton<GameManager> {
 		protected GameManager() {}
