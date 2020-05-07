@@ -5,8 +5,6 @@ namespace WhackARmole {
 		[Header ("Time Configurations")]
 		[Tooltip ("Initial countdown duration in seconds (Default Value: 3s)")]
 		public int initialCountdown = 3;
-		[Tooltip ("Gameplay Duration in seconds (Default Value: 35s)")]
-		public float gameDuration = 35.0f;
 
 		[Header ("Score Configurations")]
 		public int startingScore = 0;
@@ -19,7 +17,6 @@ namespace WhackARmole {
 
 		private void SetUp() {
 			GameManager.Instance.initialCountdown = initialCountdown;
-			GameManager.Instance.gameDuration = gameDuration;
 			GameManager.Instance.score = startingScore;
 			GameManager.Instance.minScore = minimunScore;
 		}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 861954170367068828}
   - component: {fileID: 8734607918403749080}
   - component: {fileID: 989829598100196935}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Mole Template
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -46,7 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   scoreValue: 1
-  lifeTime: 0
+  isUp: 0
   probability: 0
 --- !u!95 &989829598100196935
 Animator:
@@ -79,7 +79,8 @@ GameObject:
   - component: {fileID: 7664890169273044907}
   - component: {fileID: 2169809479349274281}
   - component: {fileID: 4424887078721802571}
-  m_Layer: 0
+  - component: {fileID: 2293825668095483581}
+  m_Layer: 8
   m_Name: Mole (Placeholder)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,3 +162,15 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2293825668095483581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3125567901178727682}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfb3a7fb3125b4c4ca91477b4992f698, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

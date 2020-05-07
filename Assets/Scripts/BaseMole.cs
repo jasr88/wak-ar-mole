@@ -1,36 +1,41 @@
 ﻿using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace WhackARmole {
-	public abstract class BaseMole :MonoBehaviour, IPointerDownHandler {
+	public abstract class BaseMole :MonoBehaviour {
 		private Animator animator;
 
 		public int scoreValue;
-		public float lifeTime;
+		public bool isUp;
 		public float probability=0.5f;
 
 		private readonly int showTrigger = Animator.StringToHash ("Show");
 		private readonly int hideTrigger = Animator.StringToHash ("Hide");
 		private readonly int whackTrigger = Animator.StringToHash ("Whack");
 
-		public delegate void OnWhackMole();
-		public OnWhackMole onWhackMole;
+		private InteractableMole interactableMole;
 
 		private void Awake() {
 			animator = GetComponent<Animator> ();
+			interactableMole = GetComponentInChildren<InteractableMole> ();
+			interactableMole.enabled = false;
 		}
 
 		protected virtual void ShowMole() {
+			interactableMole.enabled = true;
+			isUp = true;
 			animator.SetTrigger (showTrigger);
 		}
 
 		protected virtual void HideMole() {
+			interactableMole.enabled = false;
+			isUp = false;
 			animator.SetTrigger (hideTrigger);
 		}
 
-		private void WhackMole() {
+		protected void WhackMole() {
+			interactableMole.enabled = false;
+			isUp = false;
 			animator.SetTrigger (whackTrigger);
-			onWhackMole?.Invoke ();
 		}
 
 		#region Animation delegates and listeners
@@ -76,13 +81,6 @@ namespace WhackARmole {
 			onWhackAnimationEnd?.Invoke ();
 		}
 		#endregion
-
-		public void OnPointerDown(PointerEventData eventData) {
-#if UNITY_EDITOR
-			Debug.Log ("You just hit a Mole for " + scoreValue + " points.");
-#endif
-			WhackMole ();
-		}
 
 	}
 }

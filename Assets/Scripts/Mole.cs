@@ -13,12 +13,12 @@ public class Mole :BaseMole {
 		// Sentences to execute when a mole is hidden
 	}
 
-	private void WhackMole() {
+	public new void WhackMole() {
+		base.WhackMole ();
 		// Extra code to execute when a mole is whacked by the user...
 	}
 
 	private void OnEnable() {
-		onWhackMole += WhackMole;
 		/*********************************************************************************
 		 * Subscribe to other delegates (Subscribe only to the ones you are going to use)
 		 *********************************************************************************/
@@ -34,7 +34,6 @@ public class Mole :BaseMole {
 	}
 
 	private void OnDisable() {
-		onWhackMole -= WhackMole;
 		/**********************************
 		 * Unsubscribe to other delegates 
 		 **********************************/
