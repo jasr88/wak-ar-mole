@@ -5,6 +5,8 @@ using UnityEngine;
 namespace WhackARmole {
 	public class Hole :MonoBehaviour {
 		private List<Mole> molesTypes;
+		public Mole activeMole;
+		public bool isReady;
 
 		private void OnEnable() {
 			SetMoles ();
@@ -40,13 +42,15 @@ namespace WhackARmole {
 		}
 
 		public Mole GetMoleToSpawn() {
+			isReady = false;
 			foreach (Mole mole in molesTypes) {
 				float random = Random.Range (0.0f, 1.0f);
 				if (mole.probability <= random) {
-					return mole;
+					activeMole = mole;
 				}
 			}
-			return molesTypes[0];
+			activeMole = molesTypes[0];
+			return activeMole;
 		}
 
 	}

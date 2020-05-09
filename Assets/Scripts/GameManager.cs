@@ -4,9 +4,8 @@ using UnityEngine.SceneManagement;
 namespace WhackARmole {
 	public struct Phase {
 		public float duration;
-		public float moleLifetime;
+		public float roundDuration;
 		public float scoreMultiplier;
-		public float startedAtTime;
 		public int activeMolesCount;
 	}
 
@@ -14,16 +13,15 @@ namespace WhackARmole {
 		protected GameManager() { }
 
 		// DELTE THIS!!!!!
-		public Phase[] phases = new Phase[3];
+		public Phase[] phases = new Phase[1];
 		private void PopulatePhases() {
 			int i = 0;
 			foreach (Phase p in phases) {
 				Phase aux = new Phase ();
-				aux.duration = Random.Range (5.0f, 10.0f);
-				aux.moleLifetime = Random.Range (1.0f, 2.0f);
-				aux.scoreMultiplier = Random.Range (1, 2.5f);
-				aux.activeMolesCount = Random.Range (2, 6);
-				aux.startedAtTime = -1.0f;
+				aux.duration = 30.0f;// Random.Range (5.0f, 10.0f);
+				aux.roundDuration = 5.0f;// Random.Range (1.0f, 2.0f);
+				aux.scoreMultiplier = 1;// Random.Range (1, 2.5f);
+				aux.activeMolesCount = 3;// Random.Range (2, 6);
 				phases[i] = aux;
 				i++;
 				gameDuration += aux.duration;
@@ -33,7 +31,10 @@ namespace WhackARmole {
 		// Review this variables
 		public int currentPhase = 0;
 		private float waitTime = 0;
+		private float phaseStartedAt = 0;
+		private float roundWaitTime = 0;
 		public float gameDuration; // This migth be the sum of all phases durations....
+		public float elapsedTime;
 
 		// Time Configuration Values (initialized from GameData.cs)
 		public GameStates gameState;
@@ -51,6 +52,8 @@ namespace WhackARmole {
 		public delegate void OnUpdateScore(int score);
 		public delegate void OnInitialCountdownChange(int currentSecond);
 		public delegate void OnGamePlayCountdownChange(float remainingTime);
+		public delegate void OnGamePhaseChange();
+		public delegate void OnPhaseRoundChange();
 
 		// Delegates Implementations
 		public OnSetUp onSetUp;
@@ -58,6 +61,8 @@ namespace WhackARmole {
 		public OnGameEnded onGameEnded;
 		public OnInitialCountdownChange onInitialCountdownChange;
 		public OnGamePlayCountdownChange onGamePlayUpdate;
+		public OnGamePhaseChange onGamePhaseChange;
+		public OnPhaseRoundChange onPhaseRoundChange;
 
 		// Custom Timer class
 		private Timer timer;
@@ -81,6 +86,8 @@ namespace WhackARmole {
 				gameState = GameStates.PLAYING;
 				UpdateScore (score);
 				onGamePlayUpdate += ChangePhase;
+				onGamePhaseChange?.Invoke ();
+				onPhaseRoundChange?.Invoke ();
 				gameLoopCorroutine = timer.Countdown (gameDuration, false, CustomUpdate);
 			}
 		}
@@ -95,8 +102,8 @@ namespace WhackARmole {
 		private void CustomUpdate(float remainingTime) {
 			onGamePlayUpdate?.Invoke (remainingTime);
 			if (remainingTime == 0 || score <= minScore) {
-				StopCoroutine (gameLoopCorroutine);
 				gameState = GameStates.ENDED;
+				StopCoroutine (gameLoopCorroutine);
 				onGameEnded?.Invoke ();
 			}
 		}
@@ -108,19 +115,22 @@ namespace WhackARmole {
 		}
 
 		private void ChangePhase(float remainingTime) {
-			if (gameDuration == remainingTime) { // If is the beggining of the game
-				phases[currentPhase].startedAtTime = Time.time;
-				// Debug.LogFormat ("Phase: {0} at remainingTime: {1}", currentPhase, remainingTime);
+			if (gameState == GameStates.ENDED) {
+				return;
 			}
-
-			float elapsedTime = gameDuration - remainingTime;
+			elapsedTime = gameDuration - remainingTime;
 			float remainingPhaseTime = Mathf.Round ((waitTime + phases[currentPhase].duration - elapsedTime)) * 100 / 100;
-
 			if (Mathf.Approximately (remainingPhaseTime, 0) && currentPhase < phases.Length - 1) { // The phase is over and is not the last phase on the list
 				waitTime += phases[currentPhase].duration;
 				currentPhase++;
-				phases[currentPhase].startedAtTime = Time.time;
-				// Debug.LogFormat ("Phase: {0} at remainingTime: {1}", currentPhase, remainingTime);
+				phaseStartedAt = elapsedTime;
+				onGamePhaseChange?.Invoke ();
+			}
+
+			float remainingTimeInPhase = Mathf.Round ( (roundWaitTime + phases[currentPhase].roundDuration - elapsedTime) * 100) / 100;
+			if (Mathf.Approximately (remainingTimeInPhase, 0) ) {
+				roundWaitTime += phases[currentPhase].roundDuration;
+				onPhaseRoundChange?.Invoke (); ;
 			}
 		}
 	}

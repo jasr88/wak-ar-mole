@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace WhackARmole {
 	public abstract class BaseMole :MonoBehaviour {
@@ -13,11 +14,16 @@ namespace WhackARmole {
 		private readonly int whackTrigger = Animator.StringToHash ("Whack");
 
 		private InteractableMole interactableMole;
+		private Hole holeParent;
 
 		private void Awake() {
 			animator = GetComponent<Animator> ();
 			interactableMole = GetComponentInChildren<InteractableMole> ();
 			interactableMole.enabled = false;
+		}
+
+		public void SetHole(Hole parent) {
+			holeParent = parent;
 		}
 
 		protected virtual void ShowMole() {
