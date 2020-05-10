@@ -18,8 +18,8 @@ namespace WhackARmole {
 			int i = 0;
 			foreach (Phase p in phases) {
 				Phase aux = new Phase ();
-				aux.duration = 30.0f;// Random.Range (5.0f, 10.0f);
-				aux.roundDuration = 5.0f;// Random.Range (1.0f, 2.0f);
+				aux.duration = 5.0f;// Random.Range (5.0f, 10.0f);
+				aux.roundDuration = 0.9f;// Random.Range (1.0f, 2.0f);
 				aux.scoreMultiplier = 1;// Random.Range (1, 2.5f);
 				aux.activeMolesCount = 3;// Random.Range (2, 6);
 				phases[i] = aux;
@@ -111,7 +111,6 @@ namespace WhackARmole {
 		public void RestartGame() {
 			score = 0;
 			SceneManager.LoadScene (SceneManager.GetActiveScene ().name);
-			onGamePlayUpdate -= ChangePhase;
 		}
 
 		private void ChangePhase(float remainingTime) {
@@ -128,9 +127,9 @@ namespace WhackARmole {
 			}
 
 			float remainingTimeInPhase = Mathf.Round ( (roundWaitTime + phases[currentPhase].roundDuration - elapsedTime) * 100) / 100;
-			if (Mathf.Approximately (remainingTimeInPhase, 0) ) {
+			if (Mathf.Approximately (remainingTimeInPhase, 0)) {
 				roundWaitTime += phases[currentPhase].roundDuration;
-				onPhaseRoundChange?.Invoke (); ;
+				onPhaseRoundChange?.Invoke ();
 			}
 		}
 	}

@@ -16,10 +16,12 @@ namespace WhackARmole {
 		private InteractableMole interactableMole;
 		private Hole holeParent;
 
-		private void Awake() {
+		private void Start() {
 			animator = GetComponent<Animator> ();
 			interactableMole = GetComponentInChildren<InteractableMole> ();
+			interactableMole.SetMole (GetComponent<Mole>());
 			interactableMole.enabled = false;
+			Debug.Log ("Mole Awake");
 		}
 
 		public void SetHole(Hole parent) {
@@ -88,5 +90,17 @@ namespace WhackARmole {
 		}
 		#endregion
 
+		private void OnGameEnded() {
+			HideMole ();
+			animator.ResetTrigger (showTrigger);
+		}
+
+		protected void OnEnable() {
+			GameManager.Instance.onGameEnded += OnGameEnded;
+		}
+
+		protected void OnDisable() {
+			GameManager.Instance.onGameEnded -= OnGameEnded;
+		}
 	}
 }

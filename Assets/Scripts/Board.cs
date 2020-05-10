@@ -4,16 +4,15 @@ using UnityEngine;
 namespace WhackARmole {
 	public class Board :MonoBehaviour {
 		private GameObject boardGO;
-		private List<Hole> holes = new List<Hole> ();
+		private List<Hole> holes;
 		private List<Hole> activeHoles = new List<Hole> ();
 		private GameManager gm;
 		private bool isFirstRound = true;
 
-		private void OnEnable() {
+		private void Start() {
 			Debug.Log ("Enable Board");
 			gm = GameManager.Instance;
 			gm.onPhaseRoundChange += SpawnMolesRound;
-			gm.onGameEnded += HideSpawnedMoles;
 			SetBoardGo ();
 			SetHoles ();
 		}
@@ -27,19 +26,23 @@ namespace WhackARmole {
 		}
 
 		private void SpawnMolesRound() {
-			Debug.Log ("Change Phase Round");
 			if (!isFirstRound) {
-				Debug.Log ("Hide Moles");
 				HideSpawnedMoles ();
 			}
-			Debug.Log ("Show Moles");
 			SelectHolesToSpawn ();
 			isFirstRound = false;
 		}
 
 		public void SelectHolesToSpawn() {
+			int lastIndex = -1;
 			for (int n = 0; n < gm.phases[gm.currentPhase].activeMolesCount; n++) {
-				int holeIndex = Random.Range (0, holes.Count);
+
+				int holeIndex;
+				do {
+					holeIndex = Random.Range (0, holes.Count);
+				} while (lastIndex == holeIndex);
+
+				lastIndex = holeIndex;
 				activeHoles.Add (holes[holeIndex]);
 				Mole moleToSpawn = holes[holeIndex].GetMoleToSpawn ();
 				moleToSpawn.ShowMole ();

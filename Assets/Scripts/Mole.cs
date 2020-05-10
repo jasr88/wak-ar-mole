@@ -18,7 +18,8 @@ public class Mole :BaseMole {
 		// Extra code to execute when a mole is whacked by the user...
 	}
 
-	private void OnEnable() {
+	protected new void OnEnable() {
+		base.OnEnable ();
 		/*********************************************************************************
 		 * Subscribe to other delegates (Subscribe only to the ones you are going to use)
 		 *********************************************************************************/
@@ -33,7 +34,8 @@ public class Mole :BaseMole {
 		// onWhackAnimationEnd += MyCoolMethod(); 
 	}
 
-	private void OnDisable() {
+	protected new void OnDisable() {
+		base.OnDisable ();
 		/**********************************
 		 * Unsubscribe to other delegates 
 		 **********************************/
