@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace WakARmole {
+namespace WhackARmole {
 	public class UIManager :MonoBehaviour {
 		[Header ("UI Components")]
 		[Header ("Dinamyc Text (TextMeshPro UI)")]

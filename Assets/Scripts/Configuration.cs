@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
 
-namespace WakARmole {
+namespace WhackARmole {
 	public class Configuration :MonoBehaviour {
 		[Header ("Time Configurations")]
 		[Tooltip ("Initial countdown duration in seconds (Default Value: 3s)")]
 		public int initialCountdown = 3;
-		[Tooltip ("Gameplay Duration in seconds (Default Value: 35s)")]
-		public float gameDuration = 35.0f;
 
 		[Header ("Score Configurations")]
 		public int startingScore = 0;
 		public int minimunScore = -4;
+
+		[Header ("Phases")]
+		public Phase[] phases;
 
 		private void Awake() {
 			GameManager.Instance.Timer = GetComponent<Timer> ();
@@ -19,9 +20,14 @@ namespace WakARmole {
 
 		private void SetUp() {
 			GameManager.Instance.initialCountdown = initialCountdown;
-			GameManager.Instance.gameDuration = gameDuration;
 			GameManager.Instance.score = startingScore;
 			GameManager.Instance.minScore = minimunScore;
+			GameManager.Instance.phases = phases;
+			GameManager.Instance.gameDuration = 0;
+			foreach (Phase p in phases) {
+				GameManager.Instance.gameDuration += p.duration;
+			}
+			
 		}
 
 		#region Adding and Removing Delegates region
