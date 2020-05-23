@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace WhackARmole {
 	public class Hole :MonoBehaviour {
-		private List<Mole> molesTypes;
+		public List<Mole> molesTypes;
 		public Mole activeMole;
 		public bool isReady;
 

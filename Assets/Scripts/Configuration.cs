@@ -10,6 +10,9 @@ namespace WhackARmole {
 		public int startingScore = 0;
 		public int minimunScore = -4;
 
+		[Header ("Phases")]
+		public Phase[] phases;
+
 		private void Awake() {
 			GameManager.Instance.Timer = GetComponent<Timer> ();
 			GameManager.Instance.gameState = GameStates.DEFAULT;
@@ -19,6 +22,12 @@ namespace WhackARmole {
 			GameManager.Instance.initialCountdown = initialCountdown;
 			GameManager.Instance.score = startingScore;
 			GameManager.Instance.minScore = minimunScore;
+			GameManager.Instance.phases = phases;
+			GameManager.Instance.gameDuration = 0;
+			foreach (Phase p in phases) {
+				GameManager.Instance.gameDuration += p.duration;
+			}
+			
 		}
 
 		#region Adding and Removing Delegates region

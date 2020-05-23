@@ -9,12 +9,16 @@ namespace WhackARmole {
 		private GameManager gm;
 		private bool isFirstRound = true;
 
-		private void Start() {
+		private void OnEnable() {
 			Debug.Log ("Enable Board");
 			gm = GameManager.Instance;
 			gm.onPhaseRoundChange += SpawnMolesRound;
 			SetBoardGo ();
 			SetHoles ();
+		}
+
+		private void OnDisable() {
+			gm.onPhaseRoundChange -= SpawnMolesRound;
 		}
 
 		private void SetBoardGo() {
@@ -44,6 +48,7 @@ namespace WhackARmole {
 
 				lastIndex = holeIndex;
 				activeHoles.Add (holes[holeIndex]);
+			
 				Mole moleToSpawn = holes[holeIndex].GetMoleToSpawn ();
 				moleToSpawn.ShowMole ();
 			}

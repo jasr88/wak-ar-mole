@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class InteractableMole :MonoBehaviour, IPointerClickHandler {
 	private Mole mole;
 
-	private void Start() {
+	private void Awake() {
 		mole = GetComponentInParent<Mole> ();
 	}
 

@@ -19,9 +19,7 @@ namespace WhackARmole {
 		private void Start() {
 			animator = GetComponent<Animator> ();
 			interactableMole = GetComponentInChildren<InteractableMole> ();
-			interactableMole.SetMole (GetComponent<Mole>());
 			interactableMole.enabled = false;
-			Debug.Log ("Mole Awake");
 		}
 
 		public void SetHole(Hole parent) {
@@ -44,6 +42,7 @@ namespace WhackARmole {
 			interactableMole.enabled = false;
 			isUp = false;
 			animator.SetTrigger (whackTrigger);
+			GameManager.Instance.UpdateScore (GameManager.Instance.CurrentMultiplier * scoreValue);
 		}
 
 		#region Animation delegates and listeners
@@ -100,7 +99,9 @@ namespace WhackARmole {
 		}
 
 		protected void OnDisable() {
-			GameManager.Instance.onGameEnded -= OnGameEnded;
+			if (GameManager.Instance != null) {
+				GameManager.Instance.onGameEnded -= OnGameEnded;
+			}
 		}
 	}
 }
