@@ -2,7 +2,7 @@
 using UnityEngine;
 
 namespace WhackARmole {
-	public class WhackARMole :EditorWindow {
+	public class WhackARMoleEditor :EditorWindow {
 
 		public GameObject BoardGo;
 		public GameObject HolePrefab;
@@ -10,7 +10,7 @@ namespace WhackARmole {
 
 		[MenuItem ("Window/Whack-AR-Mole")]
 		public static void ShowWindow() {
-			GetWindow<WhackARMole> ("Whack-AR-Mole");
+			GetWindow<WhackARMoleEditor> ("Whack-AR-Mole");
 		}
 
 		void OnGUI() {
