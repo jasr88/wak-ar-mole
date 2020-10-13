@@ -25,22 +25,6 @@ namespace WhackARmole {
 			get => new Vector2 (Bounds.size.x, Bounds.size.z);
 		}
 
-		public static void PopulateHole(GameObject hole, GameObject[] moles) {
-			int index = 0;
-			Hole holeBehaviour = hole.GetComponent<Hole> ();
-			holeBehaviour.molesTypes = new List<Mole> ();
-
-			foreach (GameObject mole in moles) {
-				GameObject moleInstance = (GameObject)PrefabUtility.InstantiatePrefab (mole as GameObject);
-				moleInstance.name = "Mole " + index;
-				moleInstance.transform.SetParent (hole.transform);
-				moleInstance.transform.localPosition = Vector3.zero;
-				holeBehaviour.molesTypes.Add (moleInstance.GetComponent<Mole>());
-				index++;
-			}
-			
-		}
-
 		public Mole GetMoleToSpawn() {
 			isReady = false;
 			foreach (Mole mole in molesTypes) {
