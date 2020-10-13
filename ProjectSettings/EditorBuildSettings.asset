@@ -9,5 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Wak-AR-Mole.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
   m_configObjects:
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: cbc2db2ca9df4544e9996de6602ad27d,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: ca93202d7ec100042913ddd183ae0e3d,
       type: 2}
